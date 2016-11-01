@@ -1,0 +1,56 @@
+<section>
+  <form action="/search" method="get">
+    <h2>Search Existing</h2>
+    <label>
+      Search:
+      <input type="text" name="search" value="<%= @search_for %>">
+    </label>
+    <input type="submit" value="Find">
+    <% if @mfp_results %>
+    <% if session[:current_page] > 1 %>
+    <button name="prev" value="true">Prev</button>
+    <% end %>
+    <button name="next" value="true">Next</button>
+  </form>
+  <dl>
+    <h3>Other Results: </h3>
+    <% @mfp_results.each do |result| %>
+      <dt>
+        <%= result['brand'] %> - <%= result['name'] %>
+      </dt>
+      <dd>
+        Calories: <%= result['calories'] %>g |
+        Fat: <%= result['fat'] %>g |
+        Carbs: <%=   result['carbs'] %>g |
+        Protein: <%= result['protein'] %>g
+      </dd>
+      <dd>
+        Serving Size: <%= result['serving_size'] %> <%= result['serving_type'] %>
+      </dd>
+      <dd>
+        <form action="/add-food" method="post" class="add-food-btn">
+          <input type="hidden" name="brand" value="<%= result['brand'] %>">
+          <input type="hidden" name="name" value="<%= result['name'] %>">
+          <input type="hidden" name="calories" value="<%= result['calories'] %>">
+          <input type="hidden" name="fat" value="<%= result['fat'] %>">
+          <input type="hidden" name="carbs" value="<%= result['carbs'] %>">
+          <input type="hidden" name="protein" value="<%= result['protein'] %>">
+          <input type="submit" value="Add to Diary">
+        </form>
+      </dd>
+    <% end %>
+    <% end %>
+  </dl>
+  <form action="/add-food" method="post">
+    <h2>New Food</h2>
+    <label>
+      Brand
+      <input type="text" name="brand">
+    </label>
+    <label>
+      Name
+      <input type="text" name="name">
+    </label>
+    <input type="submit" value="Add">
+  </form>
+</section>

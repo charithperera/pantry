@@ -1,0 +1,31 @@
+<section>
+  <ul>
+  <% current_user.foods.each do |food| %>
+    <li><%= food.brand %> <%= food.name %> </li>
+  <% end %>
+  </ul>
+  <a href="/add-food">Add Food</a>
+  <div class="daily-nutrition">
+    <h3>My Nutrition</h3>
+    <table>
+      <tbody>
+        <thead>
+          <th>Calories</th>
+          <th>4000</th>
+        </thead>
+        <tr>
+          <td>Fat</td>
+          <td>40g</td>
+        </tr>
+        <tr>
+          <td>Carbs</td>
+          <td>150g</td>
+        </tr>
+        <tr>
+          <td>Protein</td>
+          <td>170g</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

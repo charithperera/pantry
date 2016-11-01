@@ -1,0 +1,27 @@
+body {
+  font: normal 16px Helvetica;
+  width: 80%;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+
+form {
+  width: 80%;
+  margin: 0 auto;
+}
+
+form.add-food-btn {
+  width:30px;
+  display: block;
+  margin: 0;
+}
+
+
+dt {
+  margin-top: 10px;
+}
