@@ -8,7 +8,7 @@
         <option value="units"><%= @edit_entry.food.serving_type %></option>
       <% else %>
         <option value="servings">Servings</option>
-        <option value="units" select><%= @edit_entry.food.serving_type %></option>
+        <option value="units" selected><%= @edit_entry.food.serving_type %></option>
       <% end %>
     </select>
     <input type="submit" value="Update">

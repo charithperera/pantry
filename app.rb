@@ -25,7 +25,7 @@ helpers do
   end
 
   def days_entries
-    Entry.where(user_id: current_user.id, entry_date: selected_date)
+    Entry.where(user_id: current_user.id, entry_date: selected_date).order('id ASC')
   end
 
   def days_stats
@@ -60,7 +60,30 @@ def save_entry(entry, food, params)
   entry.save
 end
 
+def update_daily_stats
+  days_stats.calories = Entry.where(entry_date: selected_date).sum(:calories)
+  days_stats.fat = Entry.where(entry_date: selected_date).sum(:fat)
+  days_stats.carbs = Entry.where(entry_date: selected_date).sum(:carbs)
+  days_stats.protein = Entry.where(entry_date: selected_date).sum(:protein)
+end
+
 get '/' do
+  # redirect to "/login" unless logged_in?
+  #
+  # if days_stats.nil?
+  #   new_day = DailyStat.new
+  #   new_day.stat_date = selected_date
+  #   new_day.user = current_user
+  #   new_day.save
+  # end
+  #
+  #
+  # erb :index
+
+  redirect to '/diary'
+end
+
+get '/diary' do
   redirect to "/login" unless logged_in?
 
   if days_stats.nil?
@@ -70,7 +93,9 @@ get '/' do
     new_day.save
   end
 
-  erb :index
+  update_daily_stats
+
+  erb :diary
 end
 
 get '/signup' do
@@ -193,7 +218,7 @@ post '/add-entry' do
   new_entry.entry_date = session[:selected_date] || Date.today
   new_entry.food = new_food
   save_entry(new_entry, new_food, params)
-  
+
   current_user.entries << new_entry
   current_user.save
 
