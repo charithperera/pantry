@@ -19,20 +19,30 @@ helpers do
   def current_user
     User.find_by(id: session[:user_id])
   end
+
+  def selected_date
+    session[:selected_date] || Date.today
+  end
+
+  def days_entries
+    Entry.where(user_id: current_user.id, entry_date: selected_date)
+  end
+
+  def days_stats
+    DailyStat.where(stat_date: selected_date, user_id: current_user.id).first
+  end
 end
 
 get '/' do
   redirect to "/login" unless logged_in?
-  todays_stats = DailyStat.where(stat_date: Date.today, user_id: current_user.id).first
 
-  if todays_stats.nil?
+  if days_stats.nil?
     new_day = DailyStat.new
-    new_day.stat_date = Date.today
+    new_day.stat_date = selected_date
     new_day.user = current_user
     new_day.save
   end
-  
-  session[:todays_stats] = DailyStat.where(stat_date: Date.today, user_id: current_user.id).first
+
   erb :index
 end
 
@@ -74,6 +84,11 @@ get '/search' do
   erb :add_food
 end
 
+get '/date' do
+  session[:selected_date] = Date.parse(params["selected-date"])
+  redirect to '/'
+end
+
 post '/signup' do
   new_email = params[:email]
   new_pass = params[:password]
@@ -89,8 +104,7 @@ post '/signup' do
 end
 
 post '/logout' do
-  session[:user_id] = nil
-  session[:message] = nil
+  session.clear
   redirect to '/'
 end
 
@@ -112,23 +126,46 @@ get '/add-food' do
   erb :add_food
 end
 
-post '/add-food' do
-  new_food = Food.new
-  new_food.brand = params[:brand]
-  new_food.name = params[:name]
-  new_food.calories = params[:calories]
-  new_food.fat = params[:fat]
-  new_food.carbs = params[:carbs]
-  new_food.protein = params[:protein]
-  new_food.save
+post '/add-entry' do
+  local_result = Food.where(brand: params[:brand], name: params[:name]).first
+  mfp_result = nil
+
+  if local_result.nil?
+    mfp_result = Food.new({
+      brand: params[:brand],
+      name: params[:name],
+      calories: params[:calories],
+      fat: params[:fat],
+      carbs: params[:carbs],
+      protein: params[:protein]
+    })
+    mfp_result.save
+  end
+
+  new_food = local_result || mfp_result
 
   new_entry = Entry.new
-  new_entry.entry_date = Time.now
+  new_entry.entry_date = session[:selected_date] || Date.today
   new_entry.food = new_food
   new_entry.save
-
   current_user.entries << new_entry
   current_user.save
 
+  days_stats.increment!('calories', new_food.calories)
+  days_stats.increment!('fat', new_food.fat)
+  days_stats.increment!('carbs', new_food.carbs)
+  days_stats.increment!('protein', new_food.protein)
+
+  redirect to '/'
+end
+
+delete '/delete-entry/:id' do
+  entry = Entry.find(params['id'])
+  deleted_food = entry.food
+  days_stats.decrement!('calories', deleted_food.calories)
+  days_stats.decrement!('fat', deleted_food.fat)
+  days_stats.decrement!('carbs', deleted_food.carbs)
+  days_stats.decrement!('protein', deleted_food.protein)
+  entry.destroy
   redirect to '/'
 end

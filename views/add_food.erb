@@ -28,7 +28,7 @@
         Serving Size: <%= result['serving_size'] %> <%= result['serving_type'] %>
       </dd>
       <dd>
-        <form action="/add-food" method="post" class="add-food-btn">
+        <form action="/add-entry" method="post" class="add-food-btn">
           <input type="hidden" name="brand" value="<%= result['brand'] %>">
           <input type="hidden" name="name" value="<%= result['name'] %>">
           <input type="hidden" name="calories" value="<%= result['calories'] %>">

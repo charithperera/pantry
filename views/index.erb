@@ -1,7 +1,19 @@
 <section>
+  <form action="/date">
+    <label>Day:
+      <input type="date" name="selected-date" value="<%= selected_date.to_s %>">
+    </label>
+    <input type="submit" value="go">
+  </form>
   <ul>
-  <% current_user.foods.each do |food| %>
-    <li><%= food.brand %> <%= food.name %> </li>
+  <% days_entries.each do |entry| %>
+    <li>
+      <%= entry.food.brand %> <%= entry.food.name %>
+      <form action="/delete-entry/<%= entry.id %>" method="post" class="delete-food-btn">
+        <input type="hidden" value="delete" name="_method">
+        <input type="submit" value="Delete">
+      </form>
+    </li>
   <% end %>
   </ul>
   <a href="/add-food">Add Food</a>
@@ -11,19 +23,19 @@
       <tbody>
         <thead>
           <th>Calories</th>
-          <th>4000</th>
+          <th><%= days_stats.calories %></th>
         </thead>
         <tr>
           <td>Fat</td>
-          <td>40g</td>
+          <td><%= days_stats.fat %>g</td>
         </tr>
         <tr>
           <td>Carbs</td>
-          <td>150g</td>
+          <td><%= days_stats.carbs %>g</td>
         </tr>
         <tr>
           <td>Protein</td>
-          <td>170g</td>
+          <td><%= days_stats.protein %>g</td>
         </tr>
       </tbody>
     </table>

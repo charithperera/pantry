@@ -4,6 +4,7 @@ require_relative 'db_config'
 require_relative 'models/food'
 require_relative 'models/user'
 require_relative 'models/entry'
+require_relative 'models/daily_stat'
 
 u1 = User.new
 u1.email = "test@test.com"

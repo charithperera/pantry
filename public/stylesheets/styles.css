@@ -15,12 +15,12 @@ form {
   margin: 0 auto;
 }
 
-form.add-food-btn {
+form.add-food-btn,
+form.delete-food-btn  {
   width:30px;
   display: block;
   margin: 0;
 }
-
 
 dt {
   margin-top: 10px;
