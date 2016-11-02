@@ -33,6 +33,33 @@ helpers do
   end
 end
 
+def save_entry(entry, food, params)
+  entry.servings = params[:servings]
+  entry.serving_type = params['serving-type-choice']
+  if params['serving-type-choice'] == 'servings'
+    entry.calories = entry.servings * food.calories
+    entry.fat = entry.servings * food.fat
+    entry.carbs = entry.servings * food.carbs
+    entry.protein = entry.servings * food.protein
+
+    entry.serving_size = "#{food.serving_size} #{food.serving_type}"
+  else
+    calories_per_unit = food.calories / food.serving_size
+    fat_per_unit = food.fat / food.serving_size
+    carbs_per_unit = food.carbs / food.serving_size
+    protein_per_unit = food.protein / food.serving_size
+
+    entry.calories = entry.servings * calories_per_unit
+    entry.fat = entry.servings * fat_per_unit
+    entry.carbs = entry.servings * carbs_per_unit
+    entry.protein = entry.servings * protein_per_unit
+
+    entry.serving_size = "1 #{food.serving_type}"
+  end
+
+  entry.save
+end
+
 get '/' do
   redirect to "/login" unless logged_in?
 
@@ -72,16 +99,20 @@ get '/search' do
     result = {}
     result['brand'] = item.search('a')[1].text.strip
     result['name'] = item.search('a')[0].text.strip
-    result['serving_size'] = item.search('label')[0].next.text.strip.to_f
+    result['serving_size'] = item.search('label')[0].next.text.strip.to_f.round(2)
     result['serving_type'] = item.search('label')[0].next.text.strip.chomp(',')
     result['serving_type'] = result['serving_type'].scan(/[A-Za-z]+/).first
-    result['calories'] = item.search('label')[1].next.text.strip.chomp(',').to_f
-    result['fat'] = item.search('label')[2].next.text.strip.chomp('g,').to_f
-    result['carbs'] = item.search('label')[3].next.text.strip.chomp('g,').to_f
-    result['protein'] = item.search('label')[4].next.text.strip.chomp('g').to_f
+    result['calories'] = item.search('label')[1].next.text.strip.chomp(',').to_f.round(2)
+    result['fat'] = item.search('label')[2].next.text.strip.chomp('g,').to_f.round(2)
+    result['carbs'] = item.search('label')[3].next.text.strip.chomp('g,').to_f.round(2)
+    result['protein'] = item.search('label')[4].next.text.strip.chomp('g').to_f.round(2)
     @mfp_results.push(result)
+    # unless Food.where(brand: result['brand'], name: result['name']).first
+    #   new_food = Food.new(result)
+    #   new_food.save
+    # end
   end
-  erb :add_food
+  erb :add_entry
 end
 
 get '/date' do
@@ -122,8 +153,20 @@ post '/login' do
   end
 end
 
-get '/add-food' do
-  erb :add_food
+get '/add-entry' do
+  erb :add_entry
+end
+
+get '/edit-entry/:id' do
+  @edit_entry = Entry.find(params[:id])
+  erb :edit_entry
+end
+
+post '/edit-entry/:id' do
+  entry = Entry.find(params[:id])
+  food = entry.food
+  save_entry(entry, food, params)
+  redirect to '/'
 end
 
 post '/add-entry' do
@@ -134,6 +177,8 @@ post '/add-entry' do
     mfp_result = Food.new({
       brand: params[:brand],
       name: params[:name],
+      serving_type: params['serving-type'],
+      serving_size: params['serving-size'],
       calories: params[:calories],
       fat: params[:fat],
       carbs: params[:carbs],
@@ -147,17 +192,20 @@ post '/add-entry' do
   new_entry = Entry.new
   new_entry.entry_date = session[:selected_date] || Date.today
   new_entry.food = new_food
-  new_entry.save
+  save_entry(new_entry, new_food, params)
+  
   current_user.entries << new_entry
   current_user.save
 
-  days_stats.increment!('calories', new_food.calories)
-  days_stats.increment!('fat', new_food.fat)
-  days_stats.increment!('carbs', new_food.carbs)
-  days_stats.increment!('protein', new_food.protein)
+  days_stats.increment!('calories', new_entry.calories)
+  days_stats.increment!('fat', new_entry.fat)
+  days_stats.increment!('carbs', new_entry.carbs)
+  days_stats.increment!('protein', new_entry.protein)
 
   redirect to '/'
 end
+
+
 
 delete '/delete-entry/:id' do
   entry = Entry.find(params['id'])

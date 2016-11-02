@@ -8,15 +8,18 @@
   <ul>
   <% days_entries.each do |entry| %>
     <li>
-      <%= entry.food.brand %> <%= entry.food.name %>
+      <%= entry.food.brand %> <%= entry.food.name %> |
+      <%= entry.servings %> servings at <%= entry.serving_size %> each serving |
+      <%= entry.calories %> Calories, <%= entry.fat %>g Fat, <%= entry.carbs %>g Carbs, <%= entry.protein %>g Protein
       <form action="/delete-entry/<%= entry.id %>" method="post" class="delete-food-btn">
         <input type="hidden" value="delete" name="_method">
         <input type="submit" value="Delete">
       </form>
+      <a href="/edit-entry/<%= entry.id %>">Edit</a>
     </li>
   <% end %>
   </ul>
-  <a href="/add-food">Add Food</a>
+  <a href="/add-entry">Add Food</a>
   <div class="daily-nutrition">
     <h3>My Nutrition</h3>
     <table>

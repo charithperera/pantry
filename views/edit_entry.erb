@@ -1,0 +1,16 @@
+<section>
+  <form action="/edit-entry/<%= @edit_entry.id %>" method="post">
+    <p><%= @edit_entry.food.brand %> <%= @edit_entry.food.name %></p>
+    <input type="number" name="servings" value="<%= @edit_entry.servings %>" required>
+    <select name="serving-type-choice">
+      <% if @edit_entry.serving_type == 'servings' %>
+        <option value="servings" selected>Servings</option>
+        <option value="units"><%= @edit_entry.food.serving_type %></option>
+      <% else %>
+        <option value="servings">Servings</option>
+        <option value="units" select><%= @edit_entry.food.serving_type %></option>
+      <% end %>
+    </select>
+    <input type="submit" value="Update">
+  </form>
+</section>

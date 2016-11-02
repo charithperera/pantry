@@ -55,17 +55,26 @@ CREATE TABLE foods (
   id SERIAL4 PRIMARY KEY,
   brand VARCHAR(50),
   name VARCHAR(100),
-  calories REAL,
-  fat REAL,
-  carbs REAL,
-  protein REAL
+  serving_size REAL,
+  serving_type VARCHAR(20),
+  calories REAL DEFAULT 0,
+  fat REAL DEFAULT 0.0,
+  carbs REAL DEFAULT 0.0,
+  protein REAL DEFAULT 0.0
 );
 
 CREATE TABLE entries (
   id SERIAL4 PRIMARY KEY,
   user_id INTEGER,
   food_id INTEGER,
-  entry_date DATE
+  entry_date DATE,
+  servings REAL,
+  serving_size VARCHAR(10),
+  serving_type VARCHAR(10),
+  calories REAL DEFAULT 0,
+  fat REAL DEFAULT 0.0,
+  carbs REAL DEFAULT 0.0,
+  protein REAL DEFAULT 0.0
 );
 
 CREATE TABLE daily_stats (
@@ -73,7 +82,7 @@ CREATE TABLE daily_stats (
   user_id INTEGER,
   stat_date DATE,
   calories INTEGER DEFAULT 0,
-  fat DECIMAL(2) DEFAULT 0.0,
-  carbs DECIMAL(2) DEFAULT 0.0,
-  protein DECIMAL(2) DEFAULT 0.0
+  fat REAL DEFAULT 0.0,
+  carbs REAL DEFAULT 0.0,
+  protein REAL DEFAULT 0.0
 );

@@ -1,0 +1,5 @@
+ id | user_id | food_id | entry_date | servings | serving_type | calories | fat | carbs | protein 
+----+---------+---------+------------+----------+--------------+----------+-----+-------+---------
+  2 |       2 |       2 | 2016-11-02 |        2 | ounce        |    179.6 |   0 |     0 |       0
+(1 row)
+

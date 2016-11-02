@@ -32,9 +32,16 @@
           <input type="hidden" name="brand" value="<%= result['brand'] %>">
           <input type="hidden" name="name" value="<%= result['name'] %>">
           <input type="hidden" name="calories" value="<%= result['calories'] %>">
+          <input type="hidden" name="serving-type" value="<%= result['serving_type'] %>">
+          <input type="hidden" name="serving-size" value="<%= result['serving_size'] %>">
           <input type="hidden" name="fat" value="<%= result['fat'] %>">
           <input type="hidden" name="carbs" value="<%= result['carbs'] %>">
           <input type="hidden" name="protein" value="<%= result['protein'] %>">
+          <input type="number" name="servings" required>
+          <select name="serving-type-choice">
+            <option value="servings" selected>Servings</option>
+            <option value="units"><%= result['serving_type'] %></option>
+          </select>
           <input type="submit" value="Add to Diary">
         </form>
       </dd>
