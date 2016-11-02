@@ -1,46 +1,11 @@
-<section>
-  <form action="/date">
-    <label>Day:
-      <input type="date" name="selected-date" value="<%= selected_date.to_s %>">
-    </label>
-    <input type="submit" value="go">
-  </form>
-  <ul>
-  <% days_entries.each do |entry| %>
-    <li>
-      <%= entry.food.brand %> <%= entry.food.name %> |
-      <%= entry.servings %> servings at <%= entry.serving_size %> each serving |
-      <%= entry.calories %> Calories, <%= entry.fat %>g Fat, <%= entry.carbs %>g Carbs, <%= entry.protein %>g Protein
-      <form action="/delete-entry/<%= entry.id %>" method="post" class="delete-food-btn">
-        <input type="hidden" value="delete" name="_method">
-        <input type="submit" value="Delete">
-      </form>
-      <a href="/edit-entry/<%= entry.id %>">Edit</a>
-    </li>
-  <% end %>
-  </ul>
-  <a href="/add-entry">Add Food</a>
-  <div class="daily-nutrition">
-    <h3>My Nutrition</h3>
-    <table>
-      <tbody>
-        <thead>
-          <th>Calories</th>
-          <th><%= days_stats.calories %></th>
-        </thead>
-        <tr>
-          <td>Fat</td>
-          <td><%= days_stats.fat %>g</td>
-        </tr>
-        <tr>
-          <td>Carbs</td>
-          <td><%= days_stats.carbs %>g</td>
-        </tr>
-        <tr>
-          <td>Protein</td>
-          <td><%= days_stats.protein %>g</td>
-        </tr>
-      </tbody>
-    </table>
+<section class="diary">
+    <div class="list-group">
+    <a href="#" class="list-group-item active">
+      Cras justo odio
+    </a>
+    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+    <a href="#" class="list-group-item">Morbi leo risus</a>
+    <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+    <a href="#" class="list-group-item">Vestibulum at eros</a>
   </div>
 </section>

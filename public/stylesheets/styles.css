@@ -1,27 +1,83 @@
-body {
-  font: normal 16px Helvetica;
-  width: 80%;
+p, h1 {
+  font-family: 'Droid Sans', sans-serif;
+}
+
+.navbar {
+  background-color: #242424;
+  border-bottom: 1px solid #b9b9b9;
+  font-family: 'Lato', sans-serif;
+}
+
+.navbar a {
+  color: #CCC !important;
+}
+
+.navbar a:hover {
+  color: #FFF !important;
+  background-color: #646464 !important;
+}
+
+.navbar-header .navbar-brand {
+  color: #FFF !important;
+  font-size: 1.5em;
+}
+
+.header {
+  background: url("/images/landing.jpg") no-repeat center 40px;
+  background-size: cover;
+  width: 100%;
+  height: 550px;
+  border-bottom: 2px solid #C9C9C9;
+  color: #FFF;
+}
+
+.header h1 {
+  color: #FFF;
+  font-family: 'Pacifico', cursive;
+  font-size: 5em;
+}
+
+.header p {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.header .btn {
+  padding: 5px 50px 5px 50px;
+  border-radius: 10px;
+  border-width: 2px;
+  border-color: #FFF;
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #FFF;
+}
+
+section {
+  padding: 100px 0 60px 0;
+}
+
+.header .btn .sign-up {
+  background-color: transparent;
+}
+
+.login form,
+.signup form {
+  max-width: 500px;
   margin: 0 auto;
 }
 
-header {
-  text-align: center;
-  margin-bottom: 50px;
-}
+@media(max-width: 768px) {
+  .header {
+    padding: 70px 0 60px 0;
+    height: 400px;
+  }
 
+  .header h1 {
+    font-size: 3em;
+  }
 
-form {
-  width: 80%;
-  margin: 0 auto;
-}
-
-form.add-food-btn,
-form.delete-food-btn  {
-  width:30px;
-  display: block;
-  margin: 0;
-}
-
-dt {
-  margin-top: 10px;
+  .header p {
+    font-size: 1.5em;
+  }
 }

@@ -80,7 +80,7 @@ get '/' do
   #
   # erb :index
 
-  redirect to '/diary'
+  erb :index
 end
 
 get '/diary' do
@@ -159,7 +159,7 @@ post '/signup' do
   end
 end
 
-post '/logout' do
+get '/logout' do
   session.clear
   redirect to '/'
 end
@@ -172,7 +172,7 @@ post '/login' do
   user = User.find_by(email: params[:email])
   if user && user.authenticate(params[:password])
     session[:user_id] = user.id
-    redirect to '/'
+    redirect to '/diary'
   else
     erb :login
   end
