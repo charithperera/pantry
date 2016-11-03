@@ -3,6 +3,7 @@ require 'sinatra/reloader'
 require 'pry'
 require 'httparty'
 require 'nokogiri'
+require 'json'
 require_relative 'db_config'
 require_relative 'models/food'
 require_relative 'models/user'
@@ -34,6 +35,7 @@ helpers do
 end
 
 def save_entry(entry, food, params)
+  binding.pry
   entry.servings = params[:servings]
   entry.serving_type = params['serving-type-choice']
   if params['serving-type-choice'] == 'servings'
@@ -68,18 +70,7 @@ def update_daily_stats
 end
 
 get '/' do
-  # redirect to "/login" unless logged_in?
-  #
-  # if days_stats.nil?
-  #   new_day = DailyStat.new
-  #   new_day.stat_date = selected_date
-  #   new_day.user = current_user
-  #   new_day.save
-  # end
-  #
-  #
-  # erb :index
-
+  redirect to "/diary" if logged_in?
   erb :index
 end
 
@@ -103,6 +94,7 @@ get '/signup' do
 end
 
 get '/search' do
+  redirect to "/login" unless logged_in?
   page_num = session[:current_page] || 1
   @search_for = params['search']
 
@@ -122,25 +114,22 @@ get '/search' do
   food_results = parse_page.css('div.food_info')
   food_results.each do |item|
     result = {}
-    result['brand'] = item.search('a')[1].text.strip
-    result['name'] = item.search('a')[0].text.strip
+    result['brand'] = item.search('a')[1].text.strip.capitalize
+    result['name'] = item.search('a')[0].text.strip.capitalize
     result['serving_size'] = item.search('label')[0].next.text.strip.to_f.round(2)
     result['serving_type'] = item.search('label')[0].next.text.strip.chomp(',')
-    result['serving_type'] = result['serving_type'].scan(/[A-Za-z]+/).first
+    result['serving_type'] = result['serving_type'].scan(/[A-Za-z]+/).first.capitalize
     result['calories'] = item.search('label')[1].next.text.strip.chomp(',').to_f.round(2)
     result['fat'] = item.search('label')[2].next.text.strip.chomp('g,').to_f.round(2)
     result['carbs'] = item.search('label')[3].next.text.strip.chomp('g,').to_f.round(2)
     result['protein'] = item.search('label')[4].next.text.strip.chomp('g').to_f.round(2)
     @mfp_results.push(result)
-    # unless Food.where(brand: result['brand'], name: result['name']).first
-    #   new_food = Food.new(result)
-    #   new_food.save
-    # end
   end
   erb :add_entry
 end
 
 get '/date' do
+  redirect to "/login" unless logged_in?
   session[:selected_date] = Date.parse(params["selected-date"])
   redirect to '/'
 end
@@ -152,7 +141,7 @@ post '/signup' do
   new_user = User.new(email: new_email, password: new_pass, password_confirmation: new_pass_conf)
   if new_user.save
     session[:user_id] = new_user.id
-    redirect to "/"
+    redirect to "/diary"
   else
     session[:message] = "An error occured"
     erb :signup
@@ -179,6 +168,7 @@ post '/login' do
 end
 
 get '/add-entry' do
+  redirect to "/login" unless logged_in?
   erb :add_entry
 end
 
@@ -198,6 +188,7 @@ post '/add-entry' do
   local_result = Food.where(brand: params[:brand], name: params[:name]).first
   mfp_result = nil
 
+  binding.pry
   if local_result.nil?
     mfp_result = Food.new({
       brand: params[:brand],

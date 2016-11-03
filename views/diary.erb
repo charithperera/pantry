@@ -1,11 +1,123 @@
+<div class="modal fade"  id="edit-food-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Edit Entry</h4>
+      </div>
+      <div class="modal-body">
+        <form action="/add-entry" method = "post" class="form-inline" id="add-food-form">
+          <h3></h3>
+          <p></p>
+          <div class="form-group">
+            <label for="servings">Servings</label>
+            <input type="number" class="form-control" id="servings" placeholder="Servings" name="servings">
+          </div>
+          <div class="form-group">
+            <label for="serving-type">Type</label>
+            <select class="form-control" name="serving-type-choice" id="serving-type">
+              <option value="servings" selected>Servings</option>
+              <option value="units" class="modal-serving-type"></option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-md">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <section class="diary">
-    <div class="list-group">
-    <a href="#" class="list-group-item active">
-      Cras justo odio
-    </a>
-    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-    <a href="#" class="list-group-item">Morbi leo risus</a>
-    <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-    <a href="#" class="list-group-item">Vestibulum at eros</a>
+  <div class="container">
+    <div class="daily-stats">
+      <div class="row">
+        <div class="col-xs-3">
+          <h1><%= days_stats.calories.round %></h1>
+        </div>
+        <div class="col-xs-3">
+          <h1><%= days_stats.fat.round %></h1>
+        </div>
+        <div class="col-xs-3">
+          <h1><%= days_stats.carbs.round %></h1>
+        </div>
+        <div class="col-xs-3">
+          <h1><%= days_stats.protein.round %></h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-3">
+          <h3>Calories</h3>
+        </div>
+        <div class="col-xs-3">
+          <h3>Fat</h3>
+        </div>
+        <div class="col-xs-3">
+          <h3>Carbs</h3>
+        </div>
+        <div class="col-xs-3">
+          <h3>Protein</h3>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <form action="/date">
+          <div class="form-group row">
+            <div class="col-md-2 col-md-offset-5 col-xs-8">
+              <input class="form-control" name="selected-date"  type="date" value="<%= selected_date.to_s %>" id="selected-date">
+            </div>
+            <div class="col-md-3 col-xs-2">
+              <button type="submit" class="btn btn-primary btn-md">Update</button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+    </div>
+    <div class="row text-center">
+      <h3><%= selected_date %></h3>
+    </div>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <div class="list-group">
+          <% if days_entries.size == 0 %>
+            <div class="list-group-item row" data-toggle="modal" data-target="#edit-food-modal">
+              <p class="list-group-item-heading text-center"><strong>Nothing yet. Eat something.</strong></p>
+            </div>
+          <% end %>
+          <% days_entries.each do |entry| %>
+            <div class="list-group-item row search-result" data-toggle="modal" data-target="#edit-food-modal">
+              <div class="col-md-7 col-sm-12">
+                <p class="list-group-item-heading"><strong><span class="result-brand"><%= entry.food['brand'] %></span> - <span class="result-name"><%= entry.food['name'] %></span></strong></p>
+                <p class="list-group-item-text">
+                  <%= entry.servings %> x
+                  <% if entry.serving_type == "servings" %>
+                    Servings
+                  <% else %>
+                    <%= entry.serving_size %> Serving
+                  <% end %>
+                </p>
+              </div>
+              <div class="col-md-5 col-sm-12 text-right">
+                <p class="list-group-item-text macro-info">
+                  Calories: <span class="result-calories"><%= entry['calories'].round %>g</span> |
+                  Fat: <span class="result-fat"><%= entry['fat'].round %></span>g |
+                  Carbs: <span class="result-carbs"><%=   entry['carbs'].round %></span>g |
+                  Protein: <span class="result-protein"><%= entry['protein'].round %></span>g
+                </p>
+              </div>
+            </div>
+          <% end %>
+          <a href="/add-entry" class="list-group-item-heading">
+            <div class="list-group-item row text-center add-entry-panel">
+                <strong><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Entry</strong>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>

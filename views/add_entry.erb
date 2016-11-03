@@ -1,63 +1,65 @@
-<section>
-  <form action="/search" method="get">
-    <h2>Search Existing</h2>
-    <label>
-      Search:
-      <input type="text" name="search" value="<%= @search_for %>">
-    </label>
-    <input type="submit" value="Find">
-    <% if @mfp_results %>
-    <% if session[:current_page] > 1 %>
-    <button name="prev" value="true">Prev</button>
-    <% end %>
-    <button name="next" value="true">Next</button>
-  </form>
-  <dl>
-    <h3>Other Results: </h3>
-    <% @mfp_results.each do |result| %>
-      <dt>
-        <%= result['brand'] %> - <%= result['name'] %>
-      </dt>
-      <dd>
-        Calories: <%= result['calories'] %>g |
-        Fat: <%= result['fat'] %>g |
-        Carbs: <%=   result['carbs'] %>g |
-        Protein: <%= result['protein'] %>g
-      </dd>
-      <dd>
-        Serving Size: <%= result['serving_size'] %> <%= result['serving_type'] %>
-      </dd>
-      <dd>
-        <form action="/add-entry" method="post" class="add-food-btn">
-          <input type="hidden" name="brand" value="<%= result['brand'] %>">
-          <input type="hidden" name="name" value="<%= result['name'] %>">
-          <input type="hidden" name="calories" value="<%= result['calories'] %>">
-          <input type="hidden" name="serving-type" value="<%= result['serving_type'] %>">
-          <input type="hidden" name="serving-size" value="<%= result['serving_size'] %>">
-          <input type="hidden" name="fat" value="<%= result['fat'] %>">
-          <input type="hidden" name="carbs" value="<%= result['carbs'] %>">
-          <input type="hidden" name="protein" value="<%= result['protein'] %>">
-          <input type="number" name="servings" required>
-          <select name="serving-type-choice">
-            <option value="servings" selected>Servings</option>
-            <option value="units"><%= result['serving_type'] %></option>
-          </select>
-          <input type="submit" value="Add to Diary">
+<div class="modal fade"  id="add-food-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Add Entry</h4>
+      </div>
+      <div class="modal-body">
+        <form action="/add-entry" method = "post" class="form-inline" id="add-food-form">
+          <h3></h3>
+          <p></p>
+          <div class="form-group">
+            <label for="servings">Servings</label>
+            <input type="number" class="form-control" id="servings" placeholder="Servings" name="servings">
+          </div>
+          <div class="form-group">
+            <label for="serving-type">Type</label>
+            <select class="form-control" name="serving-type-choice" id="serving-type">
+              <option value="servings" selected>Servings</option>
+              <option value="units" class="modal-serving-type"></option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-md">Add</button>
         </form>
-      </dd>
-    <% end %>
-    <% end %>
-  </dl>
-  <form action="/add-food" method="post">
-    <h2>New Food</h2>
-    <label>
-      Brand
-      <input type="text" name="brand">
-    </label>
-    <label>
-      Name
-      <input type="text" name="name">
-    </label>
-    <input type="submit" value="Add">
-  </form>
+      </div>
+    </div>
+  </div>
+</div>
+<section class="add-entry">
+  <div class="container">
+    <div class="row">
+      <form action="/search">
+        <div class="form-group row">
+          <input class="form-control" type="search" name="search" value="<%= @search_for %>">
+        </div>
+      </form>
+    </div>
+    <div class="row">
+      <div class="list-group">
+        <% if @mfp_results %>
+        <% @mfp_results.each do |result| %>
+          <div class="list-group-item row search-result" data-toggle="modal" data-target="#add-food-modal">
+            <div class="col-md-7 col-sm-12">
+              <p><strong><span class="result-brand"><%= result['brand'] %></span> - <span class="result-name"><%= result['name'] %></span></strong></p>
+              <p class="list-group-item-text">
+                Serving Size: <span class="result-serving-size"><%= result['serving_size'] %></span> <span class="result-serving-type"><%= result['serving_type'] %></span>
+              </p>
+            </div>
+            <div class="col-md-5 col-sm-12 text-right">
+              <p class="list-group-item-text macro-info">
+                Calories: <span class="result-calories"><%= result['calories'] %>g</span> |
+                Fat: <span class="result-fat"><%= result['fat'] %></span>g |
+                Carbs: <span class="result-carbs"><%=   result['carbs'] %></span>g |
+                Protein: <span class="result-protein"><%= result['protein'] %></span>g
+              </p>
+            </div>
+          </div>
+        <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </section>
