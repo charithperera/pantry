@@ -3,7 +3,6 @@ require 'sinatra/reloader'
 require 'pry'
 require 'httparty'
 require 'nokogiri'
-require 'json'
 require_relative 'db_config'
 require_relative 'models/food'
 require_relative 'models/user'
@@ -35,9 +34,11 @@ helpers do
 end
 
 def save_entry(entry, food, params)
-  entry.servings = params[:servings]
-  entry.serving_type = params['serving-type-choice']
-  if params['serving-type-choice'] == 'servings'
+  binding.pry
+  entry.servings = params[:servings] || 1
+  entry.serving_type = params['serving-type-choice'] || 'servings'
+  if entry.serving_type == 'servings'
+    binding.pry
     entry.calories = entry.servings * food.calories
     entry.fat = entry.servings * food.fat
     entry.carbs = entry.servings * food.carbs
@@ -45,6 +46,7 @@ def save_entry(entry, food, params)
 
     entry.serving_size = "#{food.serving_size} #{food.serving_type}"
   else
+    binding.pry
     calories_per_unit = food.calories / food.serving_size
     fat_per_unit = food.fat / food.serving_size
     carbs_per_unit = food.carbs / food.serving_size
@@ -58,18 +60,21 @@ def save_entry(entry, food, params)
     entry.serving_size = "1 #{food.serving_type}"
   end
 
+  binding.pry
   entry.save
 end
 
 def update_daily_stats
-  total_calories = Entry.where(entry_date: selected_date).sum(:calories) || 0.0
-  total_fat = Entry.where(entry_date: selected_date).sum(:fat) || 0.0
-  total_carbs = Entry.where(entry_date: selected_date).sum(:carbs) || 0.0
-  total_protein = Entry.where(entry_date: selected_date).sum(:protein) || 0.0
+  binding.pry
+  total_calories = Entry.where(entry_date: selected_date, user: current_user).sum(:calories) || 0.0
+  total_fat = Entry.where(entry_date: selected_date, user: current_user).sum(:fat) || 0.0
+  total_carbs = Entry.where(entry_date: selected_date, user: current_user).sum(:carbs) || 0.0
+  total_protein = Entry.where(entry_date: selected_date, user: current_user).sum(:protein) || 0.0
   days_stats.update(calories: total_calories)
   days_stats.update(fat: total_fat)
   days_stats.update(carbs: total_carbs)
   days_stats.update(protein: total_protein)
+  binding.pry
 end
 
 get '/' do
@@ -77,19 +82,19 @@ get '/' do
   erb :index
 end
 
+get '/home' do
+  erb :index
+end
+
 get '/diary' do
   redirect to "/login" unless logged_in?
-
   if days_stats.nil?
     new_day = DailyStat.new
     new_day.stat_date = selected_date
     new_day.user = current_user
     new_day.save
   end
-
-
   update_daily_stats
-
   erb :diary
 end
 
@@ -136,6 +141,34 @@ get '/date' do
   redirect to "/login" unless logged_in?
   session[:selected_date] = Date.parse(params["selected-date"])
   redirect to '/'
+end
+
+get '/add-new-food' do
+  erb :new_food
+end
+
+post '/add-new-food' do
+  new_food = Food.new({
+    brand: params[:brand],
+    name: params[:name],
+    serving_type: params['serving-type'],
+    serving_size: params['serving-size'],
+    calories: params[:calories],
+    fat: params[:fat],
+    carbs: params[:carbs],
+    protein: params[:protein]
+  })
+  new_food.save
+
+  new_entry = Entry.new
+  new_entry.entry_date = session[:selected_date] || Date.today
+  new_entry.food = new_food
+  save_entry(new_entry, new_food, params)
+
+  current_user.entries << new_entry
+  current_user.save
+
+  redirect to '/diary'
 end
 
 post '/signup' do
@@ -216,11 +249,6 @@ post '/add-entry' do
 
   current_user.entries << new_entry
   current_user.save
-
-  days_stats.increment!('calories', new_entry.calories)
-  days_stats.increment!('fat', new_entry.fat)
-  days_stats.increment!('carbs', new_entry.carbs)
-  days_stats.increment!('protein', new_entry.protein)
 
   redirect to '/'
 end

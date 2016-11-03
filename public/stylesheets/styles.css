@@ -125,6 +125,7 @@ section {
   margin-right: 0;
 }
 
+
 @media(max-width: 768px) {
   .header {
     padding: 70px 0 60px 0;
