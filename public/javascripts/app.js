@@ -27,7 +27,7 @@ $(document).ready(function() {
 
   $('#edit-food-modal').on('show.bs.modal', function (event) {
     result = $(event.relatedTarget)
-    debugger;
+
     var brand = result.find(".result-brand").text();
     var name = result.find(".result-name").text();
     var serving_size = result.find(".result-serving-size").text();
@@ -36,6 +36,8 @@ $(document).ready(function() {
     var fat = result.find(".result-fat").text();
     var carbs = result.find(".result-carbs").text();
     var protein = result.find(".result-protein").text();
+    var entry_id = result.find(".result-entry-id").text();
+    $(".edit-entry-id").text(entry_id);
 
     $('<input />').attr('type', 'hidden').attr('name', "brand").attr('value', brand).appendTo('#add-food-form');
     $('<input />').attr('type', 'hidden').attr('name', "name").attr('value', name).appendTo('#add-food-form');
@@ -51,5 +53,15 @@ $(document).ready(function() {
     modal.find('.modal-serving-type').text(serving_type);
     modal.find('p').text("Serving Size: " + serving_size + " " + serving_type)
   })
+
+  $("#edit-food-form button").click(function(e){
+      e.preventDefault();
+      entry_id = $(".edit-entry-id").text();
+      $("#edit-food-form").attr('action', "/edit-entry/" + entry_id).submit();
+  });
+
+  $(".delete-food-btn input[type='submit']").click(function(e) {
+    e.stopPropagation();
+  });
 
 })

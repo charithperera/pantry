@@ -8,7 +8,7 @@
         <h4 class="modal-title">Edit Entry</h4>
       </div>
       <div class="modal-body">
-        <form action="/add-entry" method = "post" class="form-inline" id="add-food-form">
+        <form action="/edit-entry" method = "post" class="form-inline" id="edit-food-form">
           <h3></h3>
           <p></p>
           <div class="form-group">
@@ -22,7 +22,8 @@
               <option value="units" class="modal-serving-type"></option>
             </select>
           </div>
-          <button type="submit" class="btn btn-primary btn-md">Add</button>
+          <span class="edit-entry-id hidden"></span>
+          <button type="submit" class="btn btn-primary btn-md">Edit</button>
         </form>
       </div>
     </div>
@@ -102,11 +103,20 @@
               </div>
               <div class="col-md-5 col-sm-12 text-right">
                 <p class="list-group-item-text macro-info">
-                  Calories: <span class="result-calories"><%= entry['calories'].round %>g</span> |
+                  Calories: <span class="result-calories"><%= entry['calories'].round %></span> |
                   Fat: <span class="result-fat"><%= entry['fat'].round %></span>g |
                   Carbs: <span class="result-carbs"><%=   entry['carbs'].round %></span>g |
                   Protein: <span class="result-protein"><%= entry['protein'].round %></span>g
                 </p>
+                <form action="/delete-entry/<%= entry.id %>" method="post" class="delete-food-btn">
+                  <input type="hidden" value="delete" name="_method">
+                  <input type="submit" value="Delete" class="btn btn-danger btn-sm">
+                </form>
+              </div>
+              <div class="hidden">
+                <span class="result-serving-size"><%= entry.food.serving_size %></span>
+                <span class="result-serving-type"><%= entry.food.serving_type %></span>
+                <span class="result-entry-id"><%= entry.id %></span>
               </div>
             </div>
           <% end %>

@@ -35,7 +35,6 @@ helpers do
 end
 
 def save_entry(entry, food, params)
-  binding.pry
   entry.servings = params[:servings]
   entry.serving_type = params['serving-type-choice']
   if params['serving-type-choice'] == 'servings'
@@ -63,10 +62,14 @@ def save_entry(entry, food, params)
 end
 
 def update_daily_stats
-  days_stats.calories = Entry.where(entry_date: selected_date).sum(:calories)
-  days_stats.fat = Entry.where(entry_date: selected_date).sum(:fat)
-  days_stats.carbs = Entry.where(entry_date: selected_date).sum(:carbs)
-  days_stats.protein = Entry.where(entry_date: selected_date).sum(:protein)
+  total_calories = Entry.where(entry_date: selected_date).sum(:calories) || 0.0
+  total_fat = Entry.where(entry_date: selected_date).sum(:fat) || 0.0
+  total_carbs = Entry.where(entry_date: selected_date).sum(:carbs) || 0.0
+  total_protein = Entry.where(entry_date: selected_date).sum(:protein) || 0.0
+  days_stats.update(calories: total_calories)
+  days_stats.update(fat: total_fat)
+  days_stats.update(carbs: total_carbs)
+  days_stats.update(protein: total_protein)
 end
 
 get '/' do
@@ -83,6 +86,7 @@ get '/diary' do
     new_day.user = current_user
     new_day.save
   end
+
 
   update_daily_stats
 
@@ -118,7 +122,7 @@ get '/search' do
     result['name'] = item.search('a')[0].text.strip.capitalize
     result['serving_size'] = item.search('label')[0].next.text.strip.to_f.round(2)
     result['serving_type'] = item.search('label')[0].next.text.strip.chomp(',')
-    result['serving_type'] = result['serving_type'].scan(/[A-Za-z]+/).first.capitalize
+    result['serving_type'] = result['serving_type'].scan(/[A-Za-z]+/).first
     result['calories'] = item.search('label')[1].next.text.strip.chomp(',').to_f.round(2)
     result['fat'] = item.search('label')[2].next.text.strip.chomp('g,').to_f.round(2)
     result['carbs'] = item.search('label')[3].next.text.strip.chomp('g,').to_f.round(2)
@@ -181,14 +185,14 @@ post '/edit-entry/:id' do
   entry = Entry.find(params[:id])
   food = entry.food
   save_entry(entry, food, params)
-  redirect to '/'
+  redirect to '/diary'
 end
 
 post '/add-entry' do
   local_result = Food.where(brand: params[:brand], name: params[:name]).first
   mfp_result = nil
 
-  binding.pry
+
   if local_result.nil?
     mfp_result = Food.new({
       brand: params[:brand],

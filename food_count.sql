@@ -71,7 +71,7 @@ CREATE TABLE entries (
   servings REAL,
   serving_size VARCHAR(50),
   serving_type VARCHAR(50),
-  calories REAL DEFAULT 0,
+  calories REAL DEFAULT 0.0,
   fat REAL DEFAULT 0.0,
   carbs REAL DEFAULT 0.0,
   protein REAL DEFAULT 0.0
@@ -81,7 +81,7 @@ CREATE TABLE daily_stats (
   id SERIAL4 PRIMARY KEY,
   user_id INTEGER,
   stat_date DATE,
-  calories INTEGER DEFAULT 0,
+  calories REAL DEFAULT 0.0,
   fat REAL DEFAULT 0.0,
   carbs REAL DEFAULT 0.0,
   protein REAL DEFAULT 0.0
