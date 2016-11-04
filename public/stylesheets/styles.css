@@ -171,4 +171,23 @@ section {
     float: left;
   }
 
+  .action p {
+    font-size: 1em;
+  }
+
+  .action {
+    padding-top: 50px;
+  }
+
+}
+
+@media(max-width: 400px) {
+  .macro-info {
+    font-size: 1em;
+  }
+
+  .search-result {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
