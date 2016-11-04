@@ -70,13 +70,25 @@
                 Serving Size: <span class="result-serving-size"><%= result['serving_size'] %></span> <span class="result-serving-type"><%= result['serving_type'] %></span>
               </p>
             </div>
-            <div class="col-md-5 col-sm-12 text-right">
-              <p class="list-group-item-text macro-info">
-                Calories: <span class="result-calories"><%= result['calories'] %>g</span> |
-                Fat: <span class="result-fat"><%= result['fat'] %></span>g |
-                Carbs: <span class="result-carbs"><%=   result['carbs'] %></span>g |
-                Protein: <span class="result-protein"><%= result['protein'] %></span>g
-              </p>
+            <div class="col-md-5 col-sm-12">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p>Calories:</p>
+                  <p><span class="result-calories"><%= result['calories'] %>g</span></p>
+                </div>
+                <div class="col-sm-3">
+                  <p>Fat</p>
+                  <p><span class="result-fat"><%= result['fat'] %></span>g</p>
+                </div>
+                <div class="col-sm-3">
+                  <p>Carbs</p>
+                  <p><span class="result-calories"><%= result['calories'] %>g</span></p>
+                </div>
+                <div class="col-sm-3">
+                  <p>Protein</p>
+                  <p><span class="result-protein"><%= result['protein'] %></span>g</p>
+                </div>
+              </div>
             </div>
           </div>
         <% end %>

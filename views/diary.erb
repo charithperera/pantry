@@ -90,7 +90,7 @@
           <% end %>
           <% days_entries.each do |entry| %>
             <div class="list-group-item row search-result" data-toggle="modal" data-target="#edit-food-modal">
-              <div class="col-md-7 col-sm-12">
+              <div class="col-md-6 col-sm-12">
                 <p class="list-group-item-heading"><strong><span class="result-brand"><%= entry.food['brand'] %></span> - <span class="result-name"><%= entry.food['name'] %></span></strong></p>
                 <p class="list-group-item-text">
                   <%= entry.servings %> x
@@ -101,17 +101,31 @@
                   <% end %>
                 </p>
               </div>
-              <div class="col-md-5 col-sm-12 text-right macro-info">
-                <p class="list-group-item-text">
-                  Calories: <span class="result-calories"><%= entry['calories'].round %></span> |
-                  Fat: <span class="result-fat"><%= entry['fat'].round %></span>g |
-                  Carbs: <span class="result-carbs"><%=   entry['carbs'].round %></span>g |
-                  Protein: <span class="result-protein"><%= entry['protein'].round %></span>g
-                </p>
-                <form action="/delete-entry/<%= entry.id %>" method="post" class="delete-food-btn">
-                  <input type="hidden" value="delete" name="_method">
-                  <input type="submit" value="Delete" class="btn btn-danger btn-sm">
-                </form>
+              <div class="col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <p>Calories:</p>
+                    <p><span class="result-calories"><%= entry['calories'].round %></span></p>
+                  </div>
+                  <div class="col-sm-2">
+                    <p>Fat</p>
+                    <p><span class="result-fat"><%= entry['fat'].round %></span>g</p>
+                  </div>
+                  <div class="col-sm-2">
+                    <p>Carbs</p>
+                    <p><span class="result-carbs"><%=   entry['carbs'].round %></span>g</p>
+                  </div>
+                  <div class="col-sm-2">
+                    <p>Protein</p>
+                    <p><span class="result-protein"><%= entry['protein'].round %></span>g</p>
+                  </div>
+                  <div class="col-sm-3">
+                    <form action="/delete-entry/<%= entry.id %>" method="post" class="delete-food-btn">
+                      <input type="hidden" value="delete" name="_method">
+                      <input type="submit" value="Delete" class="btn btn-danger btn-sm pull-right">
+                    </form>
+                  </div>
+                </div>
               </div>
               <div class="hidden">
                 <span class="result-serving-size"><%= entry.food.serving_size %></span>

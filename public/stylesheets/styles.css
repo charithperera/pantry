@@ -163,12 +163,16 @@ section {
     font-size: 1em;
   }
 
-  .macro-info {
-    text-align: left;
-  }
-
   .search-result form {
     float: left;
+  }
+
+  .search-result p {
+    display: inline;
+  }
+
+  .search-result .row {
+    margin-left: 0;
   }
 
   .action p {
@@ -179,15 +183,4 @@ section {
     padding-top: 50px;
   }
 
-}
-
-@media(max-width: 400px) {
-  .macro-info {
-    font-size: 1em;
-  }
-
-  .search-result {
-    padding-left: 0;
-    padding-right: 0;
-  }
 }
