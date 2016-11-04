@@ -1,5 +1,5 @@
 require 'sinatra'
-# require 'sinatra/reloader'
+require 'sinatra/reloader'
 require 'pry'
 require 'httparty'
 require 'nokogiri'
@@ -223,23 +223,21 @@ post '/add-entry' do
   local_result = Food.where(brand: params[:brand], name: params[:name]).first
   mfp_result = nil
 
-
   if local_result.nil?
     mfp_result = Food.new({
       brand: params[:brand],
       name: params[:name],
       serving_type: params['serving-type'],
       serving_size: params['serving-size'],
-      calories: params[:calories],
-      fat: params[:fat],
-      carbs: params[:carbs],
-      protein: params[:protein]
+      calories: params[:calories].to_f,
+      fat: params[:fat].to_f,
+      carbs: params[:carbs].to_f,
+      protein: params[:protein].to_f
     })
     mfp_result.save
   end
 
   new_food = local_result || mfp_result
-
   new_entry = Entry.new
   new_entry.entry_date = session[:selected_date] || Date.today
   new_entry.food = new_food
@@ -248,8 +246,6 @@ post '/add-entry' do
   current_user.save
   redirect to '/diary'
 end
-
-
 
 delete '/delete-entry/:id' do
   entry = Entry.find(params['id'])
