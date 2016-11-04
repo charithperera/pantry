@@ -1,5 +1,5 @@
 require 'sinatra'
-# require 'sinatra/reloader'
+require 'sinatra/reloader'
 require 'pry'
 require 'httparty'
 require 'nokogiri'
@@ -34,11 +34,9 @@ helpers do
 end
 
 def save_entry(entry, food, params)
-  binding.pry
-  entry.servings = params[:servings] || 1
+  params[:servings].nil? || params[:servings].empty? ? entry.servings = 1 : entry.servings = params[:servings]
   entry.serving_type = params['serving-type-choice'] || 'servings'
   if entry.serving_type == 'servings'
-    binding.pry
     entry.calories = entry.servings * food.calories
     entry.fat = entry.servings * food.fat
     entry.carbs = entry.servings * food.carbs
@@ -46,7 +44,6 @@ def save_entry(entry, food, params)
 
     entry.serving_size = "#{food.serving_size} #{food.serving_type}"
   else
-    binding.pry
     calories_per_unit = food.calories / food.serving_size
     fat_per_unit = food.fat / food.serving_size
     carbs_per_unit = food.carbs / food.serving_size
@@ -59,13 +56,10 @@ def save_entry(entry, food, params)
 
     entry.serving_size = "1 #{food.serving_type}"
   end
-
-  binding.pry
   entry.save
 end
 
 def update_daily_stats
-  binding.pry
   total_calories = Entry.where(entry_date: selected_date, user: current_user).sum(:calories) || 0.0
   total_fat = Entry.where(entry_date: selected_date, user: current_user).sum(:fat) || 0.0
   total_carbs = Entry.where(entry_date: selected_date, user: current_user).sum(:carbs) || 0.0
@@ -74,7 +68,6 @@ def update_daily_stats
   days_stats.update(fat: total_fat)
   days_stats.update(carbs: total_carbs)
   days_stats.update(protein: total_protein)
-  binding.pry
 end
 
 get '/' do
@@ -158,17 +151,21 @@ post '/add-new-food' do
     carbs: params[:carbs],
     protein: params[:protein]
   })
-  new_food.save
+  if new_food.save
 
-  new_entry = Entry.new
-  new_entry.entry_date = session[:selected_date] || Date.today
-  new_entry.food = new_food
-  save_entry(new_entry, new_food, params)
+    new_entry = Entry.new
+    new_entry.entry_date = session[:selected_date] || Date.today
+    new_entry.food = new_food
+    save_entry(new_entry, new_food, params)
 
-  current_user.entries << new_entry
-  current_user.save
+    current_user.entries << new_entry
+    current_user.save
 
-  redirect to '/diary'
+    redirect to '/diary'
+  else
+    @errors = new_food.errors.messages
+    erb :new_food
+  end
 end
 
 post '/signup' do
@@ -180,7 +177,7 @@ post '/signup' do
     session[:user_id] = new_user.id
     redirect to "/diary"
   else
-    session[:message] = "An error occured"
+    @errors = new_user.errors.messages
     erb :signup
   end
 end
@@ -200,6 +197,7 @@ post '/login' do
     session[:user_id] = user.id
     redirect to '/diary'
   else
+    @errors = "Invalid login details"
     erb :login
   end
 end
@@ -246,11 +244,9 @@ post '/add-entry' do
   new_entry.entry_date = session[:selected_date] || Date.today
   new_entry.food = new_food
   save_entry(new_entry, new_food, params)
-
   current_user.entries << new_entry
   current_user.save
-
-  redirect to '/'
+  redirect to '/diary'
 end
 
 

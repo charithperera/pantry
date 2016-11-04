@@ -47,16 +47,16 @@ DROP TABLE daily_stats;
 
 CREATE TABLE users (
   id SERIAL4 PRIMARY KEY,
-  email VARCHAR(200) NOT NULL,
+  email VARCHAR(200) NOT NULL UNIQUE,
   password_digest VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE foods (
   id SERIAL4 PRIMARY KEY,
-  brand VARCHAR(50),
-  name VARCHAR(100),
-  serving_size REAL,
-  serving_type VARCHAR(20),
+  brand VARCHAR(50) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  serving_size REAL NOT NULL,
+  serving_type VARCHAR(20) NOT NULL,
   calories REAL DEFAULT 0,
   fat REAL DEFAULT 0.0,
   carbs REAL DEFAULT 0.0,
@@ -68,7 +68,7 @@ CREATE TABLE entries (
   user_id INTEGER,
   food_id INTEGER,
   entry_date DATE,
-  servings REAL,
+  servings REAL NOT NULL,
   serving_size VARCHAR(50),
   serving_type VARCHAR(50),
   calories REAL DEFAULT 0.0,

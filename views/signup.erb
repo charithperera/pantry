@@ -1,5 +1,14 @@
 <section class="signup">
     <div class="container">
+      <% if @errors %>
+      <div class="alert alert-danger">
+        <ul>
+          <% @errors.each_value do | error | %>
+            <li><%= error[0] %></li>
+          <% end %>
+        </ul>
+      </div>
+      <% end %>
       <form action="/signup" method="post">
         <h1 class="text-center">Sign Up</h1>
         <div class="form-group">

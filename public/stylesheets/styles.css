@@ -32,12 +32,13 @@ p, h1 {
 }
 
 .header h1 {
+  padding-top:30px;
   color: #FFF;
   font-family: 'Pacifico', cursive;
-  font-size: 5em;
+  font-size: 10em;
 }
 
-.header p {
+.action p {
   font-size: 2em;
   font-weight: bold;
   margin-bottom: 20px;
@@ -53,13 +54,19 @@ p, h1 {
   color: #FFF;
 }
 
+.action .btn {
+  padding: 5px 50px 5px 50px;
+  border-radius: 10px;
+  border-width: 2px;
+  border-color: #000;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
 section {
   padding: 100px 0 60px 0;
 }
 
-.header .btn .sign-up {
-  background-color: transparent;
-}
 
 .login form,
 .signup form {

@@ -1,5 +1,10 @@
 <section class="login">
     <div class="container">
+      <% if @errors %>
+      <div class="alert alert-danger">
+        <%= @errors %>
+      </div>
+      <% end %>
       <form action="login" method="post">
         <h1 class="text-center">Login</h1>
         <div class="form-group">

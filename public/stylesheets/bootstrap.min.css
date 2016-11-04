@@ -6,9 +6,9 @@
 /*# sourceMappingURL=bootstrap.min.css.map */
 
 .btn-trans {
-  color: #FFFFFF;
-  background-color: transparent;
-  border-color: #FFFFFF;
+  color: #000;
+  background-color: transparent;;
+  border-color: #000;
 }
 
 .btn-trans:hover,
